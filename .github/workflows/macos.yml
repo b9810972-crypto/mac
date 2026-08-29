@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   macos:
-    runs-on: tenki-macos-15-medium
+    runs-on: tenki-macos-26-mini
 
     steps:
       - name: Install tmate
