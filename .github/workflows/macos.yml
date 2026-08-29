@@ -5,7 +5,7 @@ on:
 
 jobs:
   macos:
-    runs-on: warp-macos-26-arm64-6x
+    runs-on: ghcr.io/cirruslabs/macos-runner:tahoe
 
     steps:
       - name: Hardware info
