@@ -1,12 +1,27 @@
-name: M4 Pro macOS tmate
+name: M4 Pro tmate
 
 on:
   workflow_dispatch:
+
 jobs:
   macos:
-    runs-on: tenki-macos-latest-medium
+    runs-on: warp-macos-26-arm64-6x
 
     steps:
+      - name: Hardware info
+        run: |
+          echo "=== CPU ==="
+          sysctl -n hw.ncpu
+
+          echo "=== RAM ==="
+          sysctl -n hw.memsize
+
+          echo "=== macOS ==="
+          sw_vers
+
+          echo "=== Architecture ==="
+          uname -m
+
       - name: Install tmate
         run: |
           brew install tmate
@@ -16,17 +31,14 @@ jobs:
           tmate -S /tmp/tmate.sock new-session -d
           tmate -S /tmp/tmate.sock wait tmate-ready
 
-          echo "=============================="
-          echo "TMATE SSH CONNECTION:"
+          echo "======================================"
+          echo "SSH:"
           tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-          echo "=============================="
-
-          echo "TMATE WEB CONNECTION:"
+          echo ""
+          echo "WEB:"
           tmate -S /tmp/tmate.sock display -p '#{tmate_web}'
-          echo "=============================="
+          echo "======================================"
 
-      - name: Keep M4 alive
+      - name: Keep alive
         run: |
-          while true; do
-            sleep 60
-          done
+          sleep 1800
