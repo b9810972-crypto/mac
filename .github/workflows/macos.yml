@@ -2,10 +2,9 @@ name: M4 Pro macOS tmate
 
 on:
   workflow_dispatch:
-
 jobs:
   macos:
-    runs-on: tenki-macos-15-mini
+    runs-on: tenki-macos-latest-mini
 
     steps:
       - name: Install tmate
