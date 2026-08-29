@@ -1,26 +1,34 @@
-name: M4 Pro tmate
+name: Cirrus M4 tmate
 
 on:
   workflow_dispatch:
 
 jobs:
   macos:
+    name: "M4 Pro tmate"
     runs-on: ghcr.io/cirruslabs/macos-runner:tahoe
 
     steps:
-      - name: Hardware info
+      - name: Show hardware
         run: |
-          echo "=== CPU ==="
-          sysctl -n hw.ncpu
-
-          echo "=== RAM ==="
-          sysctl -n hw.memsize
-
           echo "=== macOS ==="
           sw_vers
 
           echo "=== Architecture ==="
           uname -m
+
+          echo "=== CPU ==="
+          sysctl -n hw.ncpu
+
+          echo "=== RAM ==="
+          python3 - <<'PY'
+          import subprocess
+          ram = int(subprocess.check_output(["sysctl", "-n", "hw.memsize"]))
+          print(f"{ram / 1024**3:.1f} GB")
+          PY
+
+          echo "=== CPU brand ==="
+          sysctl -n machdep.cpu.brand_string
 
       - name: Install tmate
         run: |
@@ -31,14 +39,14 @@ jobs:
           tmate -S /tmp/tmate.sock new-session -d
           tmate -S /tmp/tmate.sock wait tmate-ready
 
-          echo "======================================"
-          echo "SSH:"
+          echo "========================================"
+          echo "TMATE SSH:"
           tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-          echo ""
-          echo "WEB:"
+          echo
+          echo "TMATE WEB:"
           tmate -S /tmp/tmate.sock display -p '#{tmate_web}'
-          echo "======================================"
+          echo "========================================"
 
-      - name: Keep alive
+      - name: Keep runner alive
         run: |
           sleep 1800
