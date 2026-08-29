@@ -1,0 +1,33 @@
+name: M4 Pro macOS tmate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: tenki-macos-15-mini
+
+    steps:
+      - name: Install tmate
+        run: |
+          brew install tmate
+
+      - name: Start tmate
+        run: |
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+
+          echo "=============================="
+          echo "TMATE SSH CONNECTION:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+          echo "=============================="
+
+          echo "TMATE WEB CONNECTION:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_web}'
+          echo "=============================="
+
+      - name: Keep M4 alive
+        run: |
+          while true; do
+            sleep 60
+          done
