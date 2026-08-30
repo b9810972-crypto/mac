@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Show hardware
         run: |
-          echo "=== macOS ==="
-          sw_vers
 
           echo "=== Architecture ==="
           uname -m
