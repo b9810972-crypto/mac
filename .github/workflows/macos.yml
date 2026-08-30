@@ -6,7 +6,7 @@ on:
 jobs:
   macos:
     name: "M4 Pro tmate"
-    runs-on: tenki-standard-small-2c-4g
+    runs-on: tenki-macos-latest-mini
 
     steps:
       - name: Install tmate
