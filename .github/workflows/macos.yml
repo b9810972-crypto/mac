@@ -23,7 +23,7 @@ jobs:
 
           python3 -m pip install --user \
             pyobjc-framework-Quartz \
-            Flask
+            Flask --break-system-packages
 
           mkdir -p "$HOME/maccontrol"
           cd "$HOME/maccontrol"
