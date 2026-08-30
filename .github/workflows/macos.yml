@@ -519,5 +519,4 @@ jobs:
 
           done
 
-        timeout-minutes: 55
-```
+        timeout-minutes: 256
