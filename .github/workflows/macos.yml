@@ -21,9 +21,11 @@ jobs:
           echo " Installing GUI control components"
           echo "========================================"
 
-          python3 -m pip install --user \
+          python3 -m pip install \
+            --user \
+            --break-system-packages \
             pyobjc-framework-Quartz \
-            Flask --break-system-packages
+            Flask
 
           mkdir -p "$HOME/maccontrol"
           cd "$HOME/maccontrol"
@@ -478,19 +480,46 @@ jobs:
           echo " Installing SSHX"
           echo "========================================"
 
-          # Install sshx into the user's local bin directory.
           mkdir -p "$HOME/.local/bin"
 
-          curl -sSf https://sshx.io/get | sh
-
-          export PATH="$HOME/.local/bin:$PATH"
+          # SSHX currently reports a shell syntax error at the end
+          # of its installer even though the binary is downloaded.
+          # Ignore that installer exit code and use the binary it installs.
+          curl -sSf https://sshx.io/get | sh || true
 
           echo
           echo "========================================"
           echo " Starting SSHX"
           echo "========================================"
 
-          sshx & && sleep 18000
+          if [ -x "/usr/local/bin/sshx" ]; then
+
+              echo "SSHX binary found:"
+              echo "/usr/local/bin/sshx"
+
+              /usr/local/bin/sshx &
+
+              SSHX_PID=$!
+
+              echo "SSHX started with PID: $SSHX_PID"
+
+          elif command -v sshx >/dev/null 2>&1; then
+
+              echo "SSHX binary found:"
+              command -v sshx
+
+              sshx &
+
+              SSHX_PID=$!
+
+              echo "SSHX started with PID: $SSHX_PID"
+
+          else
+
+              echo "ERROR: SSHX binary was not found."
+              exit 1
+
+          fi
 
           echo
           echo "========================================"
@@ -498,63 +527,35 @@ jobs:
           echo "========================================"
 
           if [ -n "$URL" ]; then
+
               echo
               echo "GUI CONTROL URL:"
               echo
               echo "$URL/?token=$TOKEN"
               echo
+
           else
+
               echo "Cloudflare tunnel URL was not detected."
               echo
               cat "$HOME/cloudflared.log"
+
           fi
 
           echo
           echo "========================================"
-          echo "              SSHX"
+          echo "             SERVICES"
           echo "========================================"
-
-          if [ -n "$SSHX_URL" ]; then
-              echo
-              echo "SSHX URL:"
-              echo
-              echo "$SSHX_URL"
-              echo
-          else
-              echo "SSHX URL was not detected."
-              echo
-              cat "$SSHX_LOG"
-          fi
 
           echo
-          echo "========================================"
-          echo " Server log"
-          echo "========================================"
-
-          tail -50 \
-            "$HOME/maccontrol/server.log" || true
-
+          echo "GUI server PID:       $SERVER_PID"
+          echo "Cloudflare PID:       $TUNNEL_PID"
+          echo "SSHX PID:             $SSHX_PID"
           echo
+
           echo "========================================"
-          echo " RUNNING"
+          echo "             RUNNING"
           echo "========================================"
 
-          while true; do
-
-              if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-                  echo "GUI server stopped."
-                  cat "$HOME/maccontrol/server.log"
-                  exit 1
-              fi
-
-              if ! kill -0 "$SSHX_PID" 2>/dev/null; then
-                  echo "SSHX stopped."
-                  cat "$SSHX_LOG"
-                  exit 1
-              fi
-
-              sleep 10
-
-          done
-
-        timeout-minutes: 256
+          # Keep the GitHub Actions job alive.
+          sleep 18000
