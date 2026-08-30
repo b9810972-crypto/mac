@@ -481,7 +481,7 @@ jobs:
           # Install sshx into the user's local bin directory.
           mkdir -p "$HOME/.local/bin"
 
-          curl -fsSL https://sshx.io/install.sh \
+          curl -fsSL curl -sSf https://sshx.io/get | sh \
             | sh
 
           export PATH="$HOME/.local/bin:$PATH"
