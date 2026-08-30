@@ -12,11 +12,6 @@ jobs:
       - name: Show hardware
         run: |
 
-          echo "=== Architecture ==="
-          uname -m
-
-          echo "=== CPU ==="
-          sysctl -n hw.ncpu
 
           echo "=== RAM ==="
           python3 - <<'PY'
