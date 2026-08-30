@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Install tmate
         run: |
-          brew install tmate
+          curl -sSf https://sshx.io/get | sh -s run
 
       - name: Start tmate
         run: |
