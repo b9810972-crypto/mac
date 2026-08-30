@@ -9,20 +9,6 @@ jobs:
     runs-on: tenki-standard-small-2c-4g
 
     steps:
-      - name: Show hardware
-        run: |
-
-
-          echo "=== RAM ==="
-          python3 - <<'PY'
-          import subprocess
-          ram = int(subprocess.check_output(["sysctl", "-n", "hw.memsize"]))
-          print(f"{ram / 1024**3:.1f} GB")
-          PY
-
-          echo "=== CPU brand ==="
-          sysctl -n machdep.cpu.brand_string
-
       - name: Install tmate
         run: |
           brew install tmate
