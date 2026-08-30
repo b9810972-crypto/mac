@@ -6,7 +6,7 @@ on:
 jobs:
   macos:
     name: "M4 Pro tmate"
-    runs-on: ghcr.io/cirruslabs/macos-runner:tahoe
+    runs-on: tenki-standard-small-2c-4g
 
     steps:
       - name: Show hardware
